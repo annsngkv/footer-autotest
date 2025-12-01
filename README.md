@@ -1,0 +1,2 @@
+# footer-autotest
+Test task
