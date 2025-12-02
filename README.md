@@ -22,23 +22,25 @@
 
 # Инструкция запуска автотеста
 #1. Открыть репозиторий через Git
-```cmd:
+```cmd
 cd C:\Users\Имя\Documents
 git clone https://github.com/annsngkv/footer-autotest
 cd footer-autotest
 dir
 ```
 #2. Создать виртуальное окружение
-```python -m venv venv
+```cmd
+python -m venv venv
 venv\Scripts\activate
-
 ```
+
 #3. Установить зависимости
-```pip install -r requirements.txt
+```cmd
+pip install -r requirements.txt
 ```
 #4. Запустить автотест
-```python test_footer.py
-
+```cmd
+python test_footer.py
 ```
 Будет открыта страница Chrome, на которой будет производится поиск футера и его элементов. После завершения теста браузер закроется автоматически.
 Результаты появятся в консоли.
