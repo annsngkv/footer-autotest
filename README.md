@@ -24,7 +24,7 @@
 #1. Клонировать репозиторий через Git
 ```cmd
 cd C:\Users\Имя\Documents
-git clone https://github.com/annsngkv/footer-autotest/tree/featurenew-footer
+git clone https://github.com/annsngkv/footer-autotest
 cd footer-autotest
 dir
 ```
