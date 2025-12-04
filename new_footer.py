@@ -1,15 +1,13 @@
 from selenium import webdriver
-from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
+# Запуск браузера
 driver = webdriver.Chrome()
 
-# список ошибок
-errors = []
-
-# страницы для поиска
+# Список страниц для проверки
 pages = [
     "https://only.digital",
     "https://only.digital/projects",
@@ -20,48 +18,34 @@ pages = [
     "https://only.digital/contacts"
 ]
 
+# Перебор страниц
 for url in pages:
     driver.get(url)
     print(f"\nПроверка страницы: {url}")
 
-    # ожидание загрузки футера
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//footer[contains(@class, 'Footer')]"))
-    )
-    # проверяем наличие футера
+    # Поиск футера на странице
     try:
-        footer = driver.find_element(By.XPATH, "//footer[contains(@class, 'Footer')]")
+        footer = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//footer[contains(@class, 'Footer')]"))
+        )
         print("Футер найден")
+    except TimeoutException:
+        raise AssertionError(f"Футер не найден {url}")
 
-        # проверяем наличие кнопки в футере
-        try:
-            button = footer.find_element(By.XPATH, ".//button[contains(@class, 'StartProjectButton_root')]")
-            print("Кнопка 'Начать проект' найдена")
-        except NoSuchElementException:
-            msg = f"Кнопка 'Начать проект' не найдена на странице {url}"
-            print(msg)
-            errors.append(msg)
-
-        # проверяем наличие ссылки в футере
-        try:
-            link = footer.find_element(By.XPATH, ".//a[contains(@href, 'mailto:hello@only.digital')]")
-            print("Ссылка на эл.почту найдена")
-        except NoSuchElementException:
-            msg = f"Ссылка на эл.почту не найдена на странице {url}"
-            print(msg)
-            errors.append(msg)
-
+    # Поиск кнопки внутри футера
+    try:
+        button = footer.find_element(By.XPATH, ".//button[contains(@class, 'StartProjectButton_root')]")
+        print("Кнопка 'Начать проект' найдена")
     except NoSuchElementException:
-        msg = f"Футер не найден на странице {url}"
-        print(msg)
-        errors.append(msg)
+        raise AssertionError(f"Кнопка 'Начать проект' не найдена {url}")
 
+    # Поиск ссылки внутри футера
+    try:
+        footer.find_element(By.XPATH, ".//a[contains(@href, 'mailto:hello@only.digital')]")
+        print("Ссылка на эл.почту найдена")
+    except NoSuchElementException:
+        raise AssertionError(f"Ссылка на эл.почту не найдена {url}")
+
+# Закрытие браузерf
 driver.quit()
-
-print("\n=== РЕЗУЛЬТАТ ТЕСТА ===")
-if errors:
-    print("НАЙДЕНЫ ОШИБКИ:")
-    for err in errors:
-        print(" -", err)
-else:
-    print("Все проверки пройдены успешно")
+print("\nВсе страницы успешно прошли проверку")
